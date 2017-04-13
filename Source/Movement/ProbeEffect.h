@@ -3,16 +3,16 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "Probe.generated.h"
+#include "ProbeEffect.generated.h"
 
 UCLASS()
-class MOVEMENT_API AProbe : public AActor
+class MOVEMENT_API AProbeEffect : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AProbe();
+	AProbeEffect();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,10 +22,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector end;
-
-	UPROPERTY(EditDefaultsOnly, Category = ProbeAbility)
-		TSubclassOf<class AProbeEffect> ProbeEffectClass;
+	
 	
 };
