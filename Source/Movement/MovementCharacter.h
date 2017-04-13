@@ -26,17 +26,40 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	float movementNumber;
+
+	float lastMovementNumber;
+
+	float movementMultiplier;
+
+	float startingWalkSpeed;
+
+	bool dark;
+
 protected:
 
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
 
 	/** Called for forwards/backward input */
-	void MoveForward(float Value);
+	//void MoveForward(float Value);
 
 	/** Called for side to side input */
 	void MoveRight(float Value);
 
+	void SelectDeployable(float Value);
+
+	void RunDark(float Value);
+
+	void ForwardMovement();
+
+	void BackwardMovement();
+
+	void FullForward();
+
+	void FullBackward();
+
+	void StopMovement();
 	/** 
 	 * Called via input to turn at a given rate. 
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
@@ -55,6 +78,14 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	void MoveCharacter(float movementNumber, float lastMovementNumber, float movementMultiplier);
+
+	void SpawnMirror(FVector end);
+
+	void SpawnDecoy(FVector start, FVector end);
+
+	void SpawnProbe(FVector start, FVector end);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -65,5 +96,24 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	virtual void Tick(float DeltaTime) override;
+
+	void Place();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<AActor*> Deployables;
+
+	int currentDeployable;
+
+	// Projectile class to spawn.
+	UPROPERTY(EditDefaultsOnly, Category = Deployable)
+		TSubclassOf<class AMirrorField> MirrorFieldClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Deployable)
+		TSubclassOf<class ADecoy> DecoyClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Deployable)
+		TSubclassOf<class AProbe> ProbeClass;
 };
 
