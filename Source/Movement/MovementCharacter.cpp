@@ -7,6 +7,7 @@
 #include "MirrorField.h"
 #include "Decoy.h"
 #include "Probe.h"
+#include "Objective.h"
 #include <string>
 
 //////////////////////////////////////////////////////////////////////////
@@ -63,6 +64,27 @@ void AMovementCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	MoveCharacter(movementNumber, lastMovementNumber, movementMultiplier);
 	
+}
+
+void AMovementCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (ObjectiveClass) {
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FVector Start = GetActorLocation();
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+			// Spawn the projectile at the muzzle.
+
+			AObjective* objective = World->SpawnActor<AObjective>(ObjectiveClass, Start, GetControlRotation(), SpawnParams);
+			
+
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

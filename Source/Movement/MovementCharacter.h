@@ -90,6 +90,7 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -115,5 +116,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Deployable)
 		TSubclassOf<class AProbe> ProbeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Objective)
+		TSubclassOf<class AObjective> ObjectiveClass;
 };
 
