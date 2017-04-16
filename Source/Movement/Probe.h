@@ -24,5 +24,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector end;
+
+	UPROPERTY(EditDefaultsOnly, Category = ProbeAbility)
+		TSubclassOf<class AProbeEffect> ProbeEffectClass;
 	
 };
