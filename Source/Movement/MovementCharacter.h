@@ -36,6 +36,8 @@ public:
 
 	bool dark;
 
+	float height;
+
 protected:
 
 	/** Resets HMD orientation in VR. */
