@@ -34,7 +34,14 @@ public:
 
 	float startingWalkSpeed;
 
-	bool dark;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool mirror;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool spawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool dark;
 
 	float height;
 
@@ -82,11 +89,12 @@ protected:
 
 	void MoveCharacter(float movementNumber, float lastMovementNumber, float movementMultiplier);
 
-	void SpawnMirror(FVector end);
+	void SpawnMirror(FVector start, FVector end);
 
 	void SpawnDecoy(FVector start, FVector end);
 
 	void SpawnProbe(FVector start, FVector end);
+
 
 protected:
 	// APawn interface
@@ -111,7 +119,7 @@ public:
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = Deployable)
-		TSubclassOf<class AMirrorField> MirrorFieldClass;
+		TSubclassOf<class AMirrorShot> MirrorShotClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Deployable)
 		TSubclassOf<class ADecoy> DecoyClass;
