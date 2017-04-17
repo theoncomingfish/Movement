@@ -5,6 +5,7 @@
 #include "EngineUtils.h"
 #include "MovementCharacter.h"
 #include "MirrorField.h"
+#include "MirrorShot.h"
 #include "Decoy.h"
 #include "Probe.h"
 #include "Objective.h"
@@ -28,6 +29,7 @@ AMovementCharacter::AMovementCharacter()
 	movementMultiplier = 0.0f;
 	startingWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	dark = false;
+	mirror = false;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -129,6 +131,7 @@ void AMovementCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	//Handle deployables
 	PlayerInputComponent->BindAction("Place", IE_Pressed, this, &AMovementCharacter::Place);
 	PlayerInputComponent->BindAxis("SelectDeployable", this, &AMovementCharacter::SelectDeployable);
+	
 }
 
 
@@ -330,7 +333,7 @@ void AMovementCharacter::Place()
 			End.Z = height;
 			DrawDebugLine(GetWorld(), Start, End, color, 1.0, 12, 200.0f);
 			if (currentDeployable == 1) {
-				SpawnMirror(End);
+				SpawnMirror(Start, End);
 			}
 			else if (currentDeployable == 2) {
 				SpawnDecoy(Start, End);
@@ -343,7 +346,7 @@ void AMovementCharacter::Place()
 			End.Z = height;
 			DrawDebugLine(GetWorld(), Start, End, FColor::Green, 1.0, 12, 200.0f);
 			if (currentDeployable == 1) {
-				SpawnMirror(End);
+				SpawnMirror(Start, End);
 			}
 			else if (currentDeployable == 2) {
 				SpawnDecoy(Start, End);
@@ -355,8 +358,8 @@ void AMovementCharacter::Place()
 	}
 }
 
-void AMovementCharacter::SpawnMirror(FVector End) {
-	if (MirrorFieldClass) {
+void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
+	if (MirrorShotClass) {
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -366,9 +369,9 @@ void AMovementCharacter::SpawnMirror(FVector End) {
 			// Spawn the projectile at the muzzle.
 			FRotator rotation = GetControlRotation();
 			rotation.Pitch = GetActorRotation().Pitch;
-			AMirrorField* Mirror = World->SpawnActor<AMirrorField>(MirrorFieldClass, End, rotation, SpawnParams);
-
-
+			AMirrorShot* Mirror = World->SpawnActor<AMirrorShot>(MirrorShotClass, Start, rotation, SpawnParams);
+			Mirror->end = End;
+			mirror = true;
 		}
 	}
 }
@@ -412,3 +415,4 @@ void AMovementCharacter::SpawnProbe(FVector Start, FVector End) {
 		}
 	}
 }
+
