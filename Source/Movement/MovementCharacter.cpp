@@ -5,6 +5,7 @@
 #include "EngineUtils.h"
 #include "MovementCharacter.h"
 #include "MirrorField.h"
+#include "MirrorShot.h"
 #include "Decoy.h"
 #include "Probe.h"
 #include "Objective.h"
@@ -28,6 +29,7 @@ AMovementCharacter::AMovementCharacter()
 	movementMultiplier = 0.0f;
 	startingWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	dark = false;
+	mirror = false;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -56,6 +58,7 @@ AMovementCharacter::AMovementCharacter()
 
 	Deployables = TArray<AActor*>();
 	currentDeployable = 1;
+	
 }
 
 void AMovementCharacter::Tick(float DeltaTime)
@@ -85,6 +88,8 @@ void AMovementCharacter::BeginPlay()
 
 		}
 	}
+
+	height = GetActorLocation().Z;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,6 +131,7 @@ void AMovementCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	//Handle deployables
 	PlayerInputComponent->BindAction("Place", IE_Pressed, this, &AMovementCharacter::Place);
 	PlayerInputComponent->BindAxis("SelectDeployable", this, &AMovementCharacter::SelectDeployable);
+	
 }
 
 
@@ -304,6 +310,7 @@ void AMovementCharacter::Place()
 		FVector Start = GetActorLocation();
 		FVector Forward = Controller->GetActorForwardVector();
 		FVector End = (Forward * 5000.f) + Start;
+		End.Z = height;
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 		FColor color;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::FromInt(currentDeployable));
@@ -323,9 +330,10 @@ void AMovementCharacter::Place()
 
 		if (GetWorld()->LineTraceSingleByChannel(*Result, Start, End, ECC_Visibility, *TraceParams)) {
 			End = Result->ImpactPoint;
+			End.Z = height;
 			DrawDebugLine(GetWorld(), Start, End, color, 1.0, 12, 200.0f);
 			if (currentDeployable == 1) {
-				SpawnMirror(End);
+				SpawnMirror(Start, End);
 			}
 			else if (currentDeployable == 2) {
 				SpawnDecoy(Start, End);
@@ -335,9 +343,10 @@ void AMovementCharacter::Place()
 			}
 		}
 		else {
+			End.Z = height;
 			DrawDebugLine(GetWorld(), Start, End, FColor::Green, 1.0, 12, 200.0f);
 			if (currentDeployable == 1) {
-				SpawnMirror(End);
+				SpawnMirror(Start, End);
 			}
 			else if (currentDeployable == 2) {
 				SpawnDecoy(Start, End);
@@ -349,8 +358,8 @@ void AMovementCharacter::Place()
 	}
 }
 
-void AMovementCharacter::SpawnMirror(FVector End) {
-	if (MirrorFieldClass) {
+void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
+	if (MirrorShotClass) {
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -358,9 +367,11 @@ void AMovementCharacter::SpawnMirror(FVector End) {
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			// Spawn the projectile at the muzzle.
-			AMirrorField* Mirror = World->SpawnActor<AMirrorField>(MirrorFieldClass, End, GetControlRotation(), SpawnParams);
-
-
+			FRotator rotation = GetControlRotation();
+			rotation.Pitch = GetActorRotation().Pitch;
+			AMirrorShot* Mirror = World->SpawnActor<AMirrorShot>(MirrorShotClass, Start, rotation, SpawnParams);
+			Mirror->end = End;
+			mirror = true;
 		}
 	}
 }
@@ -374,12 +385,12 @@ void AMovementCharacter::SpawnDecoy(FVector Start, FVector End) {
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			// Spawn the projectile at the muzzle.
-			FRotator Rotation = Controller->GetControlRotation();
-			FRotator YawRotation(0, Rotation.Yaw, 0);
+			FRotator Rotation = GetControlRotation();
+			Rotation.Pitch = GetActorRotation().Pitch;
 
 			
 
-			ADecoy* decoy = World->SpawnActor<ADecoy>(DecoyClass, Start, GetControlRotation(), SpawnParams);
+			ADecoy* decoy = World->SpawnActor<ADecoy>(DecoyClass, Start, Rotation, SpawnParams);
 			decoy->end = End;
 
 		}
@@ -395,10 +406,13 @@ void AMovementCharacter::SpawnProbe(FVector Start, FVector End) {
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			// Spawn the projectile at the muzzle.
+			FRotator Rotation = GetControlRotation();
+			Rotation.Pitch = GetActorRotation().Pitch;
 
-			AProbe* probe = World->SpawnActor<AProbe>(ProbeClass, Start, GetControlRotation(), SpawnParams);
+			AProbe* probe = World->SpawnActor<AProbe>(ProbeClass, Start, Rotation, SpawnParams);
 			probe->end = End;
 
 		}
 	}
 }
+
