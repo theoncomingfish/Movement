@@ -16,7 +16,7 @@ ADecoy::ADecoy()
 void ADecoy::BeginPlay()
 {
 	Super::BeginPlay();
-	SetLifeSpan(7.0f);
+
 }
 
 // Called every frame
