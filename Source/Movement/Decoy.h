@@ -30,4 +30,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UMaterial* mat2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UMaterial* mat3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UMaterial* mat4;
 };
