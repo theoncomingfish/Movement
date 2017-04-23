@@ -314,16 +314,7 @@ void AMovementCharacter::Place()
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 		FColor color;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::FromInt(currentDeployable));
-		switch (currentDeployable) {
-		case 1:	color = FColor::Red;
-			break;
-		case 2: color = FColor::Blue;
-			break;
-		case 3: color = FColor::Purple;
-			break;
-		default: color = FColor::Black;
-			break;
-		}
+		
 
 
 
@@ -331,7 +322,7 @@ void AMovementCharacter::Place()
 		if (GetWorld()->LineTraceSingleByChannel(*Result, Start, End, ECC_Visibility, *TraceParams)) {
 			End = Result->ImpactPoint;
 			End.Z = height;
-			DrawDebugLine(GetWorld(), Start, End, color, 1.0, 12, 200.0f);
+			
 			if (currentDeployable == 1) {
 				SpawnMirror(Start, End);
 			}
@@ -344,7 +335,7 @@ void AMovementCharacter::Place()
 		}
 		else {
 			End.Z = height;
-			DrawDebugLine(GetWorld(), Start, End, FColor::Green, 1.0, 12, 200.0f);
+			
 			if (currentDeployable == 1) {
 				SpawnMirror(Start, End);
 			}
