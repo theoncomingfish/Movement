@@ -30,6 +30,9 @@ AMovementCharacter::AMovementCharacter()
 	startingWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	dark = false;
 	mirror = false;
+	mirrorOut = false;
+	decoyOut = false;
+	probeOut = false;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -350,7 +353,7 @@ void AMovementCharacter::Place()
 }
 
 void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
-	if (MirrorShotClass) {
+	if (MirrorShotClass && !mirrorOut) {
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -363,12 +366,13 @@ void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
 			AMirrorShot* Mirror = World->SpawnActor<AMirrorShot>(MirrorShotClass, Start, rotation, SpawnParams);
 			Mirror->end = End;
 			mirror = true;
+			mirrorOut = true;
 		}
 	}
 }
 
 void AMovementCharacter::SpawnDecoy(FVector Start, FVector End) {
-	if (DecoyClass) {
+	if (DecoyClass && !decoyOut) {
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -383,13 +387,13 @@ void AMovementCharacter::SpawnDecoy(FVector Start, FVector End) {
 
 			ADecoy* decoy = World->SpawnActor<ADecoy>(DecoyClass, Start, Rotation, SpawnParams);
 			decoy->end = End;
-
+			decoyOut = true;
 		}
 	}
 }
 
 void AMovementCharacter::SpawnProbe(FVector Start, FVector End) {
-	if (ProbeClass) {
+	if (ProbeClass && !probeOut) {
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -402,7 +406,7 @@ void AMovementCharacter::SpawnProbe(FVector Start, FVector End) {
 
 			AProbe* probe = World->SpawnActor<AProbe>(ProbeClass, Start, Rotation, SpawnParams);
 			probe->end = End;
-
+			probeOut = true;
 		}
 	}
 }
