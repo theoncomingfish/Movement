@@ -26,7 +26,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	float movementNumber;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float movementNumber;
 
 	float lastMovementNumber;
 
@@ -115,7 +116,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<AActor*> Deployables;
 
-	int currentDeployable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int currentDeployable;
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = Deployable)
