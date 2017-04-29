@@ -34,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float movementMultiplier;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float movementSliderValue;
+
 	float startingWalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
