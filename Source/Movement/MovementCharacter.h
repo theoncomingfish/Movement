@@ -31,7 +31,8 @@ public:
 
 	float lastMovementNumber;
 
-	float movementMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float movementMultiplier;
 
 	float startingWalkSpeed;
 
@@ -43,6 +44,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool dark;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool mirrorOut;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool decoyOut;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool probeOut;
 
 	float height;
 
