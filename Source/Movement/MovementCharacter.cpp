@@ -27,6 +27,7 @@ AMovementCharacter::AMovementCharacter()
 	movementNumber = 0.0f;
 	lastMovementNumber = 0.0f;
 	movementMultiplier = 0.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 	startingWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	dark = false;
 	mirror = false;

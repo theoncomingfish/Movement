@@ -31,7 +31,8 @@ public:
 
 	float lastMovementNumber;
 
-	float movementMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float movementMultiplier;
 
 	float startingWalkSpeed;
 
