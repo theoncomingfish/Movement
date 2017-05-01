@@ -57,6 +57,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool probeOut;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool leftTurn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool rightTurn;
+
 	float height;
 
 protected:
