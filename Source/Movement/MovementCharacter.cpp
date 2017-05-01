@@ -140,6 +140,9 @@ void AMovementCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	//Handle deployables
 	PlayerInputComponent->BindAction("Place", IE_Pressed, this, &AMovementCharacter::Place);
 	PlayerInputComponent->BindAxis("SelectDeployable", this, &AMovementCharacter::SelectDeployable);
+
+	PlayerInputComponent->BindAction("IncrementDeployable", IE_Pressed, this, &AMovementCharacter::IncrementDeployable);
+	PlayerInputComponent->BindAction("DecrementDeployable", IE_Pressed, this, &AMovementCharacter::DecrementDeployable);
 	
 }
 
@@ -223,6 +226,18 @@ void AMovementCharacter::SelectDeployable(float Value)
 {
 	if (Value >= 1.0f) {
 		currentDeployable = static_cast<int>(Value);
+	}
+}
+
+void AMovementCharacter::IncrementDeployable() {
+	if (currentDeployable < 3) {
+		currentDeployable++;
+	}
+}
+
+void AMovementCharacter::DecrementDeployable() {
+	if (currentDeployable > 1) {
+		currentDeployable--;
 	}
 }
 
