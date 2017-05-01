@@ -84,6 +84,10 @@ protected:
 
 	void BackwardMovement();
 
+	void IncrementDeployable();
+
+	void DecrementDeployable();
+
 	void FullForward();
 
 	void FullBackward();
