@@ -35,6 +35,8 @@ AMovementCharacter::AMovementCharacter()
 	mirrorOut = false;
 	decoyOut = false;
 	probeOut = false;
+	leftTurn = false;
+	rightTurn = false;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -71,6 +73,8 @@ void AMovementCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	MoveCharacter(movementNumber, lastMovementNumber, movementMultiplier);
+	rightTurn = false;
+	leftTurn = false;
 	
 }
 
@@ -136,6 +140,9 @@ void AMovementCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	//Handle deployables
 	PlayerInputComponent->BindAction("Place", IE_Pressed, this, &AMovementCharacter::Place);
 	PlayerInputComponent->BindAxis("SelectDeployable", this, &AMovementCharacter::SelectDeployable);
+
+	PlayerInputComponent->BindAction("IncrementDeployable", IE_Pressed, this, &AMovementCharacter::IncrementDeployable);
+	PlayerInputComponent->BindAction("DecrementDeployable", IE_Pressed, this, &AMovementCharacter::DecrementDeployable);
 	
 }
 
@@ -199,6 +206,16 @@ void AMovementCharacter::MoveRight(float Value)
 		// find out which way is right
 		FRotator Rotation = GetActorRotation();
 		Rotation = Rotation.Add(0.0f, 2*Value, 0.0f);
+		leftTurn = false;
+		rightTurn = false;
+		if (Value < 0) {
+			leftTurn = true;
+			
+		}
+		else if (Value > 0) {
+			
+			rightTurn = true;
+		}
 		
 		//rotate actor 
 		SetActorRotation(Rotation);
@@ -209,6 +226,18 @@ void AMovementCharacter::SelectDeployable(float Value)
 {
 	if (Value >= 1.0f) {
 		currentDeployable = static_cast<int>(Value);
+	}
+}
+
+void AMovementCharacter::IncrementDeployable() {
+	if (currentDeployable < 3) {
+		currentDeployable++;
+	}
+}
+
+void AMovementCharacter::DecrementDeployable() {
+	if (currentDeployable > 1) {
+		currentDeployable--;
 	}
 }
 
@@ -326,10 +355,6 @@ void AMovementCharacter::Place()
 		End.Z = height;
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 		FColor color;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::FromInt(currentDeployable));
-		
-
-
 
 
 		if (GetWorld()->LineTraceSingleByChannel(*Result, Start, End, ECC_Visibility, *TraceParams)) {
