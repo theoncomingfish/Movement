@@ -35,6 +35,8 @@ AMovementCharacter::AMovementCharacter()
 	mirrorOut = false;
 	decoyOut = false;
 	probeOut = false;
+	leftTurn = false;
+	rightTurn = false;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -71,6 +73,8 @@ void AMovementCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	MoveCharacter(movementNumber, lastMovementNumber, movementMultiplier);
+	rightTurn = false;
+	leftTurn = false;
 	
 }
 
@@ -199,6 +203,16 @@ void AMovementCharacter::MoveRight(float Value)
 		// find out which way is right
 		FRotator Rotation = GetActorRotation();
 		Rotation = Rotation.Add(0.0f, 2*Value, 0.0f);
+		leftTurn = false;
+		rightTurn = false;
+		if (Value < 0) {
+			leftTurn = true;
+			
+		}
+		else if (Value > 0) {
+			
+			rightTurn = true;
+		}
 		
 		//rotate actor 
 		SetActorRotation(Rotation);
