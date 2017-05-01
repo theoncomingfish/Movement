@@ -355,10 +355,6 @@ void AMovementCharacter::Place()
 		End.Z = height;
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 		FColor color;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::FromInt(currentDeployable));
-		
-
-
 
 
 		if (GetWorld()->LineTraceSingleByChannel(*Result, Start, End, ECC_Visibility, *TraceParams)) {
