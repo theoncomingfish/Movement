@@ -30,6 +30,8 @@ AMovementCharacter::AMovementCharacter()
 	movementSliderValue = movementMultiplier;
 	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 	startingWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	//initialize variables
 	dark = false;
 	mirror = false;
 	mirrorOut = false;
@@ -71,6 +73,7 @@ AMovementCharacter::AMovementCharacter()
 void AMovementCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//trigger movement on tick
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	MoveCharacter(movementNumber, lastMovementNumber, movementMultiplier);
 	rightTurn = false;
@@ -141,6 +144,7 @@ void AMovementCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAction("Place", IE_Pressed, this, &AMovementCharacter::Place);
 	PlayerInputComponent->BindAxis("SelectDeployable", this, &AMovementCharacter::SelectDeployable);
 
+	//mouse wheel scroll functionality
 	PlayerInputComponent->BindAction("IncrementDeployable", IE_Pressed, this, &AMovementCharacter::IncrementDeployable);
 	PlayerInputComponent->BindAction("DecrementDeployable", IE_Pressed, this, &AMovementCharacter::DecrementDeployable);
 	
@@ -175,6 +179,7 @@ void AMovementCharacter::LookUpAtRate(float Rate)
 }
 
 void AMovementCharacter::RunDark(float Value) {
+	//handle running dark
 	if (Value == 1.0f) {
 		dark = true;
 	}
@@ -201,6 +206,7 @@ void AMovementCharacter::MoveForward(float Value)
 */
 void AMovementCharacter::MoveRight(float Value)
 {
+	//function for handling player rotation
 	if ( (Controller != NULL) && (Value != 0.0f) && !dark)
 	{
 		// find out which way is right
@@ -224,54 +230,63 @@ void AMovementCharacter::MoveRight(float Value)
 
 void AMovementCharacter::SelectDeployable(float Value)
 {
+	//deployable select via number keys
 	if (Value >= 1.0f) {
 		currentDeployable = static_cast<int>(Value);
 	}
 }
 
 void AMovementCharacter::IncrementDeployable() {
+	//deployable select via mouse wheel
 	if (currentDeployable < 3) {
 		currentDeployable++;
 	}
 }
 
 void AMovementCharacter::DecrementDeployable() {
+	//deployable select via mouse wheel
 	if (currentDeployable > 1) {
 		currentDeployable--;
 	}
 }
 
 void AMovementCharacter::ForwardMovement() {
+	//increment the movement number
 	if (movementNumber < 4 && !dark) {
 		movementNumber++;
 	}
 }
 
 void AMovementCharacter::BackwardMovement() {
+	//decrement the movement number
 	if (movementNumber > -4 && !dark) {
 		movementNumber--;
 	}
 }
 
 void AMovementCharacter::StopMovement() {
+	//set movement number to 0
 	if (!dark) {
 		movementNumber = 0.0f;
 	}
 }
 
 void AMovementCharacter::FullForward() {
+	//set movement value to highest value
 	if (!dark) {
 		movementNumber = 4.0f;
 	}
 }
 
 void AMovementCharacter::FullBackward() {
+	//set movement value to lowest value
 	if (!dark) {
 		movementNumber = -4.0f;
 	}
 }
 
 void AMovementCharacter::MoveCharacter(float aMovementNumber, float aLastMovementNumber, float aMovementMultiplier) {
+	//handle forward movement changes
 	if (aMovementNumber > 0 && aLastMovementNumber >= 0) {
 		if (aMovementMultiplier != aMovementNumber && aMovementNumber > aMovementMultiplier) {
 			movementMultiplier += (0.01f * aMovementNumber);
@@ -286,6 +301,7 @@ void AMovementCharacter::MoveCharacter(float aMovementNumber, float aLastMovemen
 		AddMovementInput(Direction, 1.0f);
 		lastMovementNumber = movementNumber;
 	}
+	
 	else if (aMovementNumber > 0 && aLastMovementNumber < 0) {
 		if (aMovementMultiplier > 0.0f) {
 			movementMultiplier -= (0.01f * aMovementNumber);
@@ -298,6 +314,7 @@ void AMovementCharacter::MoveCharacter(float aMovementNumber, float aLastMovemen
 			lastMovementNumber = movementNumber;
 		}
 	}
+	//handle backward movement changes
 	else if (aMovementNumber < 0.0f && aLastMovementNumber <= 0.0f) {
 		if (aMovementMultiplier != (aMovementNumber * (-1)) && (aMovementNumber * (-1)) > aMovementMultiplier) {
 			movementMultiplier -= (0.01f * aMovementNumber);
@@ -324,6 +341,7 @@ void AMovementCharacter::MoveCharacter(float aMovementNumber, float aLastMovemen
 			lastMovementNumber = movementNumber;
 		}
 	}
+	//handle stopping
 	else if (aMovementNumber == 0.0f) {
 		if (aMovementMultiplier > aMovementNumber) {
 			movementMultiplier -= 0.01f;
@@ -347,6 +365,7 @@ void AMovementCharacter::MoveCharacter(float aMovementNumber, float aLastMovemen
 
 void AMovementCharacter::Place()
 {
+	//handle firing of deployables
 	if (!dark) {
 		FHitResult* Result = new FHitResult();
 		FVector Start = GetActorLocation();
@@ -388,6 +407,7 @@ void AMovementCharacter::Place()
 }
 
 void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
+	//spawn mirror field deployable
 	if (MirrorShotClass && !mirrorOut) {
 		UWorld* World = GetWorld();
 		if (World)
@@ -407,6 +427,7 @@ void AMovementCharacter::SpawnMirror(FVector Start, FVector End) {
 }
 
 void AMovementCharacter::SpawnDecoy(FVector Start, FVector End) {
+	//spawn decoy deployable
 	if (DecoyClass && !decoyOut) {
 		UWorld* World = GetWorld();
 		if (World)
@@ -428,6 +449,7 @@ void AMovementCharacter::SpawnDecoy(FVector Start, FVector End) {
 }
 
 void AMovementCharacter::SpawnProbe(FVector Start, FVector End) {
+	//spawn probe deployable
 	if (ProbeClass && !probeOut) {
 		UWorld* World = GetWorld();
 		if (World)
